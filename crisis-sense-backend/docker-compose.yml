@@ -1,0 +1,60 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: crisis-sense-backend-api:local
+    command: ["node", "dist/server.js"]
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL:?SUPABASE_URL is required}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?ANTHROPIC_API_KEY is required}
+      INTERNAL_DASHBOARD_API_KEY: ${INTERNAL_DASHBOARD_API_KEY:?INTERNAL_DASHBOARD_API_KEY is required}
+      PORT: ${PORT:-3000}
+    ports:
+      - "${PORT:-3000}:3000"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:' + (process.env.PORT || 3000) + '/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+        ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    image: crisis-sense-backend-worker:local
+    depends_on:
+      api:
+        condition: service_healthy
+    entrypoint: ["/usr/local/bin/entrypoint-worker.sh"]
+    command: ["node", "dist/workers/reportProcessor.js"]
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL:?SUPABASE_URL is required}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?ANTHROPIC_API_KEY is required}
+      INTERNAL_DASHBOARD_API_KEY: ${INTERNAL_DASHBOARD_API_KEY:?INTERNAL_DASHBOARD_API_KEY is required}
+      PORT: ${PORT:-3000}
+      REPORT_PROCESSOR_POLL_MS: ${REPORT_PROCESSOR_POLL_MS:-5000}
+      REPORT_PROCESSOR_BATCH_SIZE: ${REPORT_PROCESSOR_BATCH_SIZE:-5}
+      DOCUMENT_EMBEDDING_BATCH_SIZE: ${DOCUMENT_EMBEDDING_BATCH_SIZE:-20}
+      SEED_DOCUMENTS_PATH: ${SEED_DOCUMENTS_PATH:-}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"const fs=require('fs');try{const cmd=fs.readFileSync('/proc/1/cmdline','utf8');process.exit(cmd.includes('dist/workers/reportProcessor.js')?0:1);}catch{process.exit(1);}\"",
+        ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
