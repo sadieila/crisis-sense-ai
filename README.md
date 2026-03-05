@@ -153,6 +153,19 @@ Computer Science Student
 
 ---
 
+## Deploy on Render (Blueprint)
+
+1. Push this repository to GitHub (including `render.yaml`).
+2. In Render, choose **New + > Blueprint** and select this repository.
+3. Render will create the web service using:
+   - Build command: `npm ci --include=dev && npm run build`
+   - Start command: `node dist/index.cjs`
+4. Set all required secret values in Render environment variables (keys are listed in `.env.example` and `render.yaml`).
+5. Deploy and verify health:
+   - `GET /api/health` should return `{ "status": "ok" }`.
+
+---
+
 ## License
 
 Academic / Demonstration Project
