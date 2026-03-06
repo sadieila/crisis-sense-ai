@@ -420,11 +420,6 @@ export default function Dashboard() {
     };
   }, [isAuthenticated, resetIdle]);
 
-  // Redirect only when NOT busy with an operation
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated && !busyRef.current) navigate("/login");
-  }, [authLoading, isAuthenticated, navigate]);
-
   // ── Data queries ─────────────────────────────────────────────────────────
 
   const activeQ = useQuery<Incident[]>({
@@ -953,5 +948,6 @@ export default function Dashboard() {
     </div>
   );
 }
+
 
 
