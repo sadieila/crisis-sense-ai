@@ -7,11 +7,76 @@ import { createServer } from "http";
 const app = express();
 const httpServer = createServer(app);
 
-const corsOptions = {
-  origin: ["https://crisis-sense-ai-two.vercel.app"],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+function normalizeOrigin(value: string): string | null {
+  try {
+    const url = new URL(value);
+    return `${url.protocol}//${url.host}`.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+function readAllowedCustomOrigins(): Set<string> {
+  const raw = process.env.CORS_ALLOWED_ORIGINS ?? "";
+  const origins = raw
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0)
+    .map((item) => normalizeOrigin(item))
+    .filter((item): item is string => Boolean(item));
+
+  return new Set(origins);
+}
+
+const allowedCustomOrigins = readAllowedCustomOrigins();
+
+function isAllowedOrigin(origin: string): boolean {
+  const normalized = normalizeOrigin(origin);
+  if (!normalized) {
+    return false;
+  }
+
+  let url: URL;
+  try {
+    url = new URL(normalized);
+  } catch {
+    return false;
+  }
+
+  const hostname = url.hostname.toLowerCase();
+
+  if (hostname.endsWith(".vercel.app")) {
+    return true;
+  }
+
+  if (
+    url.protocol === "http:" &&
+    (hostname === "localhost" || hostname === "127.0.0.1")
+  ) {
+    return true;
+  }
+
+  return allowedCustomOrigins.has(normalized);
+}
+
+const corsOptions: cors.CorsOptions = {
+  origin(origin, callback) {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    if (isAllowedOrigin(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
+  optionsSuccessStatus: 204,
 };
 
 function validateServerEnv(): void {
