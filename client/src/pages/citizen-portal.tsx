@@ -380,10 +380,10 @@ export default function CitizenPortal() {
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="\u0645\u062b\u0627\u0644: 0591234567"
-                dir="ltr"
-                style={{ direction: "ltr", textAlign: "left" }}
-                className="w-full p-3 rounded-lg border bg-card text-foreground focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20 outline-none transition-all text-sm text-left"
+                placeholder="مثال: 0591234567"
+                dir="rtl"
+                style={{ direction: "rtl", textAlign: "right" }}
+                className="w-full p-3 rounded-lg border bg-card text-foreground focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20 outline-none transition-all text-sm text-right"
                 data-testid="input-phone"
               />
             </div>
