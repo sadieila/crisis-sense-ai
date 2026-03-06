@@ -1,6 +1,6 @@
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
-import { rm, readFile } from "fs/promises";
+import { cp, mkdir, readdir, readFile, rm } from "fs/promises";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -37,6 +37,7 @@ async function buildAll() {
 
   console.log("building client...");
   await viteBuild();
+  await mirrorClientBuildForRender();
 
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));
@@ -59,6 +60,19 @@ async function buildAll() {
     external: externals,
     logLevel: "info",
   });
+}
+
+async function mirrorClientBuildForRender() {
+  // Vercel serves dist/, while Render expects dist/public.
+  const distEntries = await readdir("dist", { withFileTypes: true });
+  await mkdir("dist/public", { recursive: true });
+
+  for (const entry of distEntries) {
+    if (entry.name === "public") continue;
+    const src = `dist/${entry.name}`;
+    const dest = `dist/public/${entry.name}`;
+    await cp(src, dest, { recursive: true });
+  }
 }
 
 buildAll().catch((err) => {
