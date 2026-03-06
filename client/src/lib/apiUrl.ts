@@ -8,9 +8,13 @@ export function withApiBase(path: string): string {
 
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   if (!apiBaseUrl) {
+    if (normalizedPath.startsWith("/api/") || normalizedPath === "/api") {
+      throw new Error(
+        "Missing VITE_API_URL. Set VITE_API_URL to your Render backend URL and redeploy.",
+      );
+    }
     return normalizedPath;
   }
 
   return `${apiBaseUrl}${normalizedPath}`;
 }
-
