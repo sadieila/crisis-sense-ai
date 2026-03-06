@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { withApiBase } from "@/lib/apiUrl";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -93,6 +94,7 @@ function sevGlow(s: number) {
  * Refreshes the Supabase session before each call to prevent expired-token redirects.
  */
 async function authedFetch(url: string, init?: RequestInit): Promise<Response> {
+  const apiUrl = withApiBase(url);
   // Force a refresh to ensure token is valid — prevents expired session issues
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) {
@@ -103,14 +105,14 @@ async function authedFetch(url: string, init?: RequestInit): Promise<Response> {
         ...(init?.headers ?? {}),
         Authorization: `Bearer ${refreshed.session.access_token}`,
       };
-      return fetch(url, { ...init, headers, credentials: "include" });
+      return fetch(apiUrl, { ...init, headers, credentials: "include" });
     }
   }
   const headers: HeadersInit = { ...(init?.headers ?? {}) };
   if (session?.access_token) {
     (headers as Record<string, string>)["Authorization"] = `Bearer ${session.access_token}`;
   }
-  return fetch(url, { ...init, headers, credentials: "include" });
+  return fetch(apiUrl, { ...init, headers, credentials: "include" });
 }
 
 // ── SeverityBar ────────────────────────────────────────────────────────────────
@@ -902,3 +904,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+
