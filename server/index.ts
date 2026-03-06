@@ -1,10 +1,18 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 
 const app = express();
 const httpServer = createServer(app);
+
+const corsOptions = {
+  origin: ["https://crisis-sense-ai-two.vercel.app"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
 
 function validateServerEnv(): void {
   const required = [
@@ -49,6 +57,9 @@ declare module "http" {
     rawBody: unknown;
   }
 }
+
+app.use(cors(corsOptions));
+app.options("/{*path}", cors(corsOptions));
 
 app.use(
   express.json({
