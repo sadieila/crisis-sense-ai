@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import { categories, areas, subAreas } from "@shared/schema";
 import type { InsertReport } from "@shared/schema";
@@ -40,18 +41,8 @@ export default function CitizenPortal() {
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
 
-  type SubmitPayload = {
-    user_id: string;
-    category: string;
-    subProblem: string;
-    area: string;
-    specificLocation?: string;
-    title: string;
-    content: string;
-  };
-
   const submitMutation = useMutation({
-    mutationFn: async (payload: SubmitPayload) => {
+    mutationFn: async (payload: InsertReport) => {
       const res = await apiRequest("POST", "/api/reports", payload);
       return res.json();
     },
@@ -108,26 +99,15 @@ export default function CitizenPortal() {
 
     const details = formData.details?.trim() || "";
     const specificLocation = formData.specificLocation?.trim() || undefined;
-    const payload: SubmitPayload = {
-      user_id:
-        formData.idNumber?.trim() ||
-        formData.phone?.trim() ||
-        formData.fullName?.trim() ||
-        "citizen-anonymous",
+    const payload: InsertReport = {
       category,
       subProblem,
       area,
       specificLocation,
-      title: `${category} - ${subProblem}`.slice(0, 120),
-      content: [
-        `Category: ${category}`,
-        `Issue: ${subProblem}`,
-        `Area: ${area}`,
-        specificLocation ? `Specific location: ${specificLocation}` : "",
-        details ? `Details: ${details}` : "",
-      ]
-        .filter((item) => item.length > 0)
-        .join("\n"),
+      details,
+      fullName: formData.fullName?.trim() || "",
+      idNumber: formData.idNumber?.trim() || "",
+      phone: formData.phone?.trim() || "",
     };
 
     submitMutation.mutate(payload);
@@ -230,10 +210,10 @@ export default function CitizenPortal() {
             </div>
 
             <div className="text-center pt-4 border-t">
-              <a href="/login" className="text-sm text-muted-foreground hover:text-foreground font-medium inline-flex items-center gap-2 transition-colors" data-testid="link-dashboard">
+              <Link href="/login" className="text-sm text-muted-foreground hover:text-foreground font-medium inline-flex items-center gap-2 transition-colors" data-testid="link-dashboard">
                 <Building2 className="w-4 h-4" />
                 {lang === "ar" ? "دخول المنظمات الإنسانية" : "Organization Login"}
-              </a>
+              </Link>
             </div>
           </Card>
         </div>

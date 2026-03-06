@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
+import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
@@ -201,9 +202,9 @@ export default function ResetPasswordPage() {
             </h1>
           </div>
           <p className="text-sm text-muted-foreground mb-4">{message}</p>
-          <a href="/login" className="text-sm text-slate-700 hover:text-slate-900 underline">
+          <Link href="/login" className="text-sm text-slate-700 hover:text-slate-900 underline">
             Go to login
-          </a>
+          </Link>
         </Card>
       </div>
     );
