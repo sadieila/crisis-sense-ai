@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import {
   AlertTriangle, Eye, FileText, Loader2, LogOut, RefreshCw,
   Download, Bot, Clock, Brain, Shield, X, BarChart3, Layers,
-  Filter as FilterIcon, Pencil, Save, Activity,
+  Filter as FilterIcon, Pencil, Save, Activity, Menu,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
@@ -184,24 +184,24 @@ function CrisisDetailPanel({
   return (
     <div className="h-full flex flex-col ops-detail-panel">
       {/* Header */}
-      <div className="p-6 border-b border-slate-200 dark:border-slate-700/50">
+      <div className="p-4 sm:p-5 lg:p-6 border-b border-slate-200 dark:border-slate-700/50">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl ${incident.status === "active"
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl ${incident.status === "active"
                 ? "bg-red-50 dark:bg-red-950/30 ring-1 ring-red-200 dark:ring-red-800/30"
                 : "bg-amber-50 dark:bg-amber-950/30 ring-1 ring-amber-200 dark:ring-amber-800/30"
               }`}>
               {catIcon(incident.category)}
             </div>
             <div>
-              <h2 className="text-lg font-bold tracking-tight">{incident.category}</h2>
-              <p className="text-sm text-muted-foreground mt-0.5">{incident.area} • {incident.report_count} بلاغ</p>
+              <h2 className="text-base sm:text-lg font-bold tracking-tight">{incident.category}</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{incident.area} • {incident.report_count} بلاغ</p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full"><X className="w-4 h-4" /></Button>
+          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full h-10 w-10 sm:h-9 sm:w-9"><X className="w-4 h-4" /></Button>
         </div>
 
-        <div className="flex items-center gap-3 mt-4">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-4">
           <Badge className={`${incident.status === "active" ? "bg-red-600" : "bg-amber-500"} text-white text-[11px] px-3 py-1 font-semibold`}>
             {incident.status === "active" ? "⚠ أزمة نشطة" : "تحت المراقبة"}
           </Badge>
@@ -212,12 +212,12 @@ function CrisisDetailPanel({
 
         {/* ── ACTION BAR ── */}
         <div className="flex flex-wrap items-center gap-2 mt-5 pt-4 border-t border-slate-200 dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
-          <Button size="sm" className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg px-4 shadow-sm"
+          <Button size="sm" className="h-10 sm:h-9 gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-[11px] font-semibold rounded-lg px-4 shadow-sm"
             onClick={() => onExport(incident.id)}>
             <Download className="w-3.5 h-3.5" /> تصدير Excel مؤسسي
           </Button>
           {canAnalyze && (
-            <Button size="sm" variant="outline" className="gap-2 text-xs rounded-lg px-4 border-blue-200 text-blue-700 hover:bg-blue-50 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-950/30"
+            <Button size="sm" variant="outline" className="h-10 sm:h-9 gap-2 text-xs sm:text-[11px] rounded-lg px-4 border-blue-200 text-blue-700 hover:bg-blue-50 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-950/30"
               onClick={() => onAnalyze(incident.id)} disabled={isAnalyzing}>
               {isAnalyzing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5" />}
               {incident.ai_summary ? "إعادة التقييم ↻" : "تحليل ذكي"}
@@ -228,16 +228,16 @@ function CrisisDetailPanel({
 
       {/* Body tabs */}
       <Tabs defaultValue="justification" className="flex-1 flex flex-col min-h-0">
-        <TabsList className="mx-6 mt-4 bg-slate-100 dark:bg-slate-800/50 w-fit justify-start rounded-lg p-1">
-          <TabsTrigger value="justification" className="text-xs gap-1.5 rounded-md data-[state=active]:shadow-sm"><Brain className="w-3 h-3" /> التبرير</TabsTrigger>
-          <TabsTrigger value="reports" className="text-xs gap-1.5 rounded-md data-[state=active]:shadow-sm"><FileText className="w-3 h-3" /> البلاغات ({reports.length})</TabsTrigger>
-          <TabsTrigger value="notes" className="text-xs gap-1.5 rounded-md data-[state=active]:shadow-sm"><Pencil className="w-3 h-3" /> ملاحظات</TabsTrigger>
+        <TabsList className="mx-4 sm:mx-5 lg:mx-6 mt-3 sm:mt-4 bg-slate-100 dark:bg-slate-800/50 w-auto max-w-[calc(100%-2rem)] sm:max-w-[calc(100%-2.5rem)] lg:max-w-none justify-start rounded-lg p-1 overflow-x-auto whitespace-nowrap">
+          <TabsTrigger value="justification" className="shrink-0 h-10 sm:h-9 text-xs sm:text-[11px] gap-1.5 rounded-md data-[state=active]:shadow-sm"><Brain className="w-3 h-3" /> التبرير</TabsTrigger>
+          <TabsTrigger value="reports" className="shrink-0 h-10 sm:h-9 text-xs sm:text-[11px] gap-1.5 rounded-md data-[state=active]:shadow-sm"><FileText className="w-3 h-3" /> البلاغات ({reports.length})</TabsTrigger>
+          <TabsTrigger value="notes" className="shrink-0 h-10 sm:h-9 text-xs sm:text-[11px] gap-1.5 rounded-md data-[state=active]:shadow-sm"><Pencil className="w-3 h-3" /> ملاحظات</TabsTrigger>
         </TabsList>
 
         {/* AI JUSTIFICATION TAB */}
         <TabsContent value="justification" className="flex-1 overflow-auto">
           <ScrollArea className="h-full">
-            <div className="p-6 space-y-4">
+            <div className="p-4 sm:p-5 lg:p-6 space-y-4">
               {incident.ai_summary ? (
                 <>
                   <div className="rounded-2xl p-5 bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-blue-950/40 dark:to-indigo-950/20 border border-blue-100 dark:border-blue-800/30">
@@ -255,7 +255,7 @@ function CrisisDetailPanel({
                       <Shield className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                       <span className="font-semibold text-sm">ملخص الأدلة</span>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="text-xs"><span className="text-muted-foreground">البلاغات:</span> <span className="font-semibold">{incident.report_count}</span></div>
                       <div className="text-xs"><span className="text-muted-foreground">المنطقة:</span> <span className="font-semibold">{incident.area}</span></div>
                       <div className="text-xs"><span className="text-muted-foreground">الفئة:</span> <span className="font-semibold">{incident.category}</span></div>
@@ -294,13 +294,13 @@ function CrisisDetailPanel({
         {/* LINKED REPORTS TAB */}
         <TabsContent value="reports" className="flex-1 overflow-auto">
           <ScrollArea className="h-full">
-            <div className="p-6 space-y-2">
+            <div className="p-4 sm:p-5 lg:p-6 space-y-2">
               {reportsQ.isLoading ? (
                 Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)
               ) : reports.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8">لا توجد بلاغات مرتبطة</p>
               ) : reports.map(r => (
-                <div key={r.id} className="p-3.5 rounded-xl bg-white dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 space-y-1.5 hover:border-slate-200 dark:hover:border-slate-600 transition-colors">
+                <div key={r.id} className="p-3 sm:p-3.5 rounded-xl bg-white dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/50 space-y-1.5 hover:border-slate-200 dark:hover:border-slate-600 transition-colors">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 text-xs">
                       <span>{catIcon(r.category ?? "")}</span>
@@ -319,7 +319,7 @@ function CrisisDetailPanel({
         {/* ANALYST NOTES TAB */}
         <TabsContent value="notes" className="flex-1 overflow-auto">
           <ScrollArea className="h-full">
-            <div className="p-6 space-y-4">
+            <div className="p-4 sm:p-5 lg:p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Pencil className="w-4 h-4 text-slate-500" />
@@ -377,6 +377,7 @@ export default function Dashboard() {
   const [, navigate] = useLocation();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
   const [showTimeoutWarn, setShowTimeoutWarn] = useState(false);
   const [analyzingIds, setAnalyzingIds] = useState<Set<string>>(new Set());
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -458,6 +459,22 @@ export default function Dashboard() {
   const allIncidents = [...active, ...monitoring];
   const selectedIncident = allIncidents.find(i => i.id === selectedId) ?? null;
   const allReports = reportsQ.data ?? [];
+
+  const handleSelectIncident = (id: string) => {
+    setSelectedId(id);
+    setIsMobilePanelOpen(true);
+  };
+
+  const closeIncidentPanel = () => {
+    setSelectedId(null);
+    setIsMobilePanelOpen(false);
+  };
+
+  useEffect(() => {
+    if (!selectedIncident) {
+      setIsMobilePanelOpen(false);
+    }
+  }, [selectedIncident]);
 
   const filteredReports = allReports.filter(r => {
     if (rptCategoryFilter !== "all" && r.category !== rptCategoryFilter) return false;
@@ -594,34 +611,46 @@ export default function Dashboard() {
 
       {/* ── HEADER ── */}
       <header className="sticky top-0 z-50 ops-header text-white">
-        <div className="max-w-[1920px] mx-auto px-6 py-3.5 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-600/20">
-              <Shield className="w-5 h-5 text-white" />
+        <div className="max-w-[1920px] mx-auto px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3.5 flex flex-wrap md:flex-nowrap justify-between items-start sm:items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-600/20">
+              <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2.5">
-                <h1 className="text-sm font-bold tracking-tight">منصة استخبارات الأزمات</h1>
+                <h1 className="text-xs sm:text-sm font-bold tracking-tight truncate">منصة استخبارات الأزمات</h1>
                 <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-blue-500/20 text-blue-300 font-mono border border-blue-500/20">v1.0</span>
               </div>
-              <p className="text-[10px] text-slate-400 mt-0.5">{org?.name ? `${org.name} — ` : ""}{user?.displayName ?? user?.email}</p>
+              <p className="hidden sm:block text-[10px] text-slate-400 mt-0.5 truncate">{org?.name ? `${org.name} — ` : ""}{user?.displayName ?? user?.email}</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2 sm:gap-1.5 flex-wrap justify-end">
             <span className="text-[10px] font-semibold px-3 py-1 rounded-full bg-slate-700/80 text-slate-300 border border-slate-600/50">
               {roleLabels[user?.role ?? ""] ?? user?.role}
             </span>
+            {selectedIncident && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMobilePanelOpen((prev) => !prev)}
+                className="lg:hidden text-slate-300 hover:text-white hover:bg-white/10 h-10 w-10 p-0 rounded-lg"
+                aria-label="تبديل لوحة التفاصيل"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+            )}
             {canExport && (
-              <Button variant="ghost" size="sm" onClick={handleExportReports} className="text-slate-400 hover:text-white hover:bg-white/10 h-8 text-[11px] gap-1.5 rounded-lg">
+              <Button variant="ghost" size="sm" onClick={handleExportReports} className="hidden md:inline-flex text-slate-400 hover:text-white hover:bg-white/10 h-8 text-[11px] gap-1.5 rounded-lg">
                 <Download className="w-3.5 h-3.5" /> تصدير شامل
               </Button>
             )}
-            <Button variant="ghost" size="sm" onClick={handleRefresh} disabled={isRefreshing} className="text-slate-400 hover:text-white hover:bg-white/10 h-8 text-[11px] gap-1.5 rounded-lg">
-              {isRefreshing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />} تحديث
+            <Button variant="ghost" size="sm" onClick={handleRefresh} disabled={isRefreshing} className="text-slate-300 hover:text-white hover:bg-white/10 h-10 sm:h-8 text-[11px] gap-1.5 rounded-lg px-3 sm:px-2">
+              {isRefreshing ? <Loader2 className="w-4 h-4 sm:w-3.5 sm:h-3.5 animate-spin" /> : <RefreshCw className="w-4 h-4 sm:w-3.5 sm:h-3.5" />}
+              <span className="hidden sm:inline">تحديث</span>
             </Button>
-            <div className="w-px h-5 bg-slate-700 mx-1" />
-            <Button variant="ghost" size="sm" onClick={handleLogout} disabled={isLoggingOut} className="text-slate-400 hover:text-white hover:bg-white/10 h-8 text-[11px] gap-1.5 rounded-lg">
-              {isLoggingOut ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <LogOut className="w-3.5 h-3.5" />}
+            <div className="hidden sm:block w-px h-5 bg-slate-700 mx-1" />
+            <Button variant="ghost" size="sm" onClick={handleLogout} disabled={isLoggingOut} className="text-slate-300 hover:text-white hover:bg-white/10 h-10 sm:h-8 text-[11px] gap-1.5 rounded-lg px-3 sm:px-2">
+              {isLoggingOut ? <Loader2 className="w-4 h-4 sm:w-3.5 sm:h-3.5 animate-spin" /> : <LogOut className="w-4 h-4 sm:w-3.5 sm:h-3.5" />}
             </Button>
           </div>
         </div>
@@ -631,20 +660,20 @@ export default function Dashboard() {
       <div className="flex-1 flex overflow-hidden">
 
         {/* ═══ LEFT: Main content ═══ */}
-        <div className={`${selectedIncident ? "w-[440px] xl:w-[500px] shrink-0" : "flex-1"} flex flex-col border-l border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-300`}>
+        <div className={`${selectedIncident ? "flex-1 lg:w-[440px] xl:w-[500px] lg:shrink-0" : "flex-1"} flex flex-col lg:border-l border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-300`}>
 
           {/* Stats */}
-          <div className="px-6 pt-5 pb-4 grid grid-cols-4 gap-4">
+          <div className="px-3 sm:px-4 lg:px-6 pt-3 sm:pt-4 lg:pt-5 pb-3 lg:pb-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 lg:gap-4">
             {[
               { icon: AlertTriangle, color: "text-red-600", bg: "bg-red-50 dark:bg-red-950/30", val: active.length, label: "أزمات نشطة" },
               { icon: Eye, color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-950/30", val: monitoring.length, label: "تحت المراقبة" },
               { icon: BarChart3, color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-950/30", val: allReports.length, label: "إجمالي البلاغات" },
               { icon: Activity, color: "text-purple-600", bg: "bg-purple-50 dark:bg-purple-950/30", val: avgSeverity, label: "متوسط الخطورة" },
             ].map((s, i) => (
-              <div key={i} className="ops-stat flex items-center gap-3 p-3.5 rounded-xl">
+              <div key={i} className="ops-stat w-full flex items-center gap-3 p-3 sm:p-3.5 rounded-xl">
                 <div className={`p-2.5 rounded-xl ${s.bg}`}><s.icon className={`w-4 h-4 ${s.color}`} /></div>
                 <div>
-                  <p className="text-xl font-extrabold leading-none tracking-tight">{s.val}</p>
+                  <p className="text-lg sm:text-xl font-extrabold leading-none tracking-tight">{s.val}</p>
                   <p className="text-[10px] text-muted-foreground mt-1 font-medium">{s.label}</p>
                 </div>
               </div>
@@ -653,18 +682,18 @@ export default function Dashboard() {
 
           {/* Main tabs */}
           <Tabs defaultValue="crises" className="flex-1 flex flex-col min-h-0">
-            <TabsList className="mx-6 bg-white dark:bg-slate-800/60 shadow-sm border border-slate-200 dark:border-slate-700/50 w-fit justify-start rounded-lg p-1">
-              <TabsTrigger value="crises" className="text-xs gap-1.5 font-semibold rounded-md data-[state=active]:shadow-sm"><Layers className="w-3.5 h-3.5" /> الأزمات ({allIncidents.length})</TabsTrigger>
-              <TabsTrigger value="reports" className="text-xs gap-1.5 font-semibold rounded-md data-[state=active]:shadow-sm"><FileText className="w-3.5 h-3.5" /> البلاغات ({allReports.length})</TabsTrigger>
+            <TabsList className="mx-3 sm:mx-4 lg:mx-6 bg-white dark:bg-slate-800/60 shadow-sm border border-slate-200 dark:border-slate-700/50 w-auto max-w-[calc(100%-1.5rem)] sm:max-w-[calc(100%-2rem)] lg:max-w-none justify-start rounded-lg p-1 overflow-x-auto whitespace-nowrap">
+              <TabsTrigger value="crises" className="shrink-0 h-10 sm:h-9 text-xs sm:text-[11px] gap-1.5 font-semibold rounded-md data-[state=active]:shadow-sm"><Layers className="w-3.5 h-3.5" /> الأزمات ({allIncidents.length})</TabsTrigger>
+              <TabsTrigger value="reports" className="shrink-0 h-10 sm:h-9 text-xs sm:text-[11px] gap-1.5 font-semibold rounded-md data-[state=active]:shadow-sm"><FileText className="w-3.5 h-3.5" /> البلاغات ({allReports.length})</TabsTrigger>
               {canAnalyze && (
-                <TabsTrigger value="signals" className="text-xs gap-1.5 font-medium rounded-md text-slate-400 data-[state=active]:text-slate-600 data-[state=active]:shadow-sm"><Eye className="w-3.5 h-3.5" /> إشارات استشارية</TabsTrigger>
+                <TabsTrigger value="signals" className="shrink-0 h-10 sm:h-9 text-xs sm:text-[11px] gap-1.5 font-medium rounded-md text-slate-400 data-[state=active]:text-slate-600 data-[state=active]:shadow-sm"><Eye className="w-3.5 h-3.5" /> إشارات استشارية</TabsTrigger>
               )}
             </TabsList>
 
             {/* ── CRISES TAB ── */}
             <TabsContent value="crises" className="flex-1 overflow-auto">
               <ScrollArea className="h-full">
-                <div className="p-6 space-y-6">
+                <div className="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
                   {activeQ.isLoading ? (
                     <div className="space-y-4">{[1, 2].map(i => <Skeleton key={i} className="h-36 rounded-2xl" />)}</div>
                   ) : active.length > 0 ? (
@@ -675,11 +704,11 @@ export default function Dashboard() {
                       </div>
                       <div className={selectedIncident ? "space-y-3" : "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"}>
                         {active.map(inc => (
-                          <div key={inc.id} onClick={() => setSelectedId(inc.id)}
+                          <div key={inc.id} onClick={() => handleSelectIncident(inc.id)}
                             className={`ops-card relative cursor-pointer rounded-2xl overflow-hidden ${inc.id === selectedId ? "ring-2 ring-blue-500 shadow-lg" : ""
                               } ${sevGlow(inc.severity)} shadow-md`}>
                             <div className={`absolute top-0 left-0 right-0 h-1 ${sevColor(inc.severity)}`} />
-                            <div className="p-5 pt-4 space-y-3">
+                            <div className="p-4 sm:p-5 sm:pt-4 space-y-3">
                               <div className="flex items-start justify-between gap-2">
                                 <div className="flex items-center gap-3">
                                   <span className="text-2xl">{catIcon(inc.category)}</span>
@@ -704,12 +733,12 @@ export default function Dashboard() {
                               )}
                               <div className="flex items-center gap-1.5 pt-1" onClick={e => e.stopPropagation()}>
                                 {canExport && (
-                                  <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1.5 rounded-lg" onClick={() => handleExport(inc.id)}>
+                                  <Button size="sm" variant="outline" className="h-9 sm:h-7 text-[11px] sm:text-[10px] gap-1.5 rounded-lg px-3 sm:px-2" onClick={() => handleExport(inc.id)}>
                                     <Download className="w-3 h-3" /> تصدير
                                   </Button>
                                 )}
                                 {canAnalyze && !inc.ai_summary && (
-                                  <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1.5 text-blue-600 rounded-lg" onClick={() => handleAnalyze(inc.id)} disabled={analyzingIds.has(inc.id)}>
+                                  <Button size="sm" variant="outline" className="h-9 sm:h-7 text-[11px] sm:text-[10px] gap-1.5 text-blue-600 rounded-lg px-3 sm:px-2" onClick={() => handleAnalyze(inc.id)} disabled={analyzingIds.has(inc.id)}>
                                     {analyzingIds.has(inc.id) ? <Loader2 className="w-3 h-3 animate-spin" /> : <Brain className="w-3 h-3" />} تحليل
                                   </Button>
                                 )}
@@ -735,7 +764,7 @@ export default function Dashboard() {
                       <p className="text-[10px] text-muted-foreground mb-3">حوادث لم تصل لحد الأزمة بعد — مرتبطة ببلاغات لم تتجاوز عتبة التصعيد.</p>
                       <div className={selectedIncident ? "space-y-2" : "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"}>
                         {monitoring.map(inc => (
-                          <div key={inc.id} onClick={() => setSelectedId(inc.id)}
+                          <div key={inc.id} onClick={() => handleSelectIncident(inc.id)}
                             className={`ops-card cursor-pointer rounded-xl p-3.5 flex items-center gap-3 ${inc.id === selectedId ? "ring-2 ring-blue-500" : ""}`}>
                             <span className="text-lg">{catIcon(inc.category)}</span>
                             <div className="flex-1 min-w-0">
@@ -754,41 +783,42 @@ export default function Dashboard() {
 
             {/* ── REPORTS TAB ── */}
             <TabsContent value="reports" className="flex-1 overflow-auto">
-              <div className="p-6 space-y-3">
+              <div className="p-3 sm:p-4 lg:p-6 space-y-3">
                 <div className="flex items-center gap-2 flex-wrap">
                   <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
                     <FilterIcon className="w-3.5 h-3.5" /> تصفية:
                   </div>
                   <Select value={rptCategoryFilter} onValueChange={setRptCategoryFilter}>
-                    <SelectTrigger className="h-8 w-[160px] text-xs rounded-lg"><SelectValue placeholder="الفئة" /></SelectTrigger>
+                    <SelectTrigger className="h-10 sm:h-8 w-[140px] sm:w-[160px] text-xs rounded-lg"><SelectValue placeholder="الفئة" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">جميع الفئات</SelectItem>
                       {reportCategories.map(c => <SelectItem key={c as string} value={c as string}>{c}</SelectItem>)}
                     </SelectContent>
                   </Select>
                   <Select value={rptAreaFilter} onValueChange={setRptAreaFilter}>
-                    <SelectTrigger className="h-8 w-[160px] text-xs rounded-lg"><SelectValue placeholder="المنطقة" /></SelectTrigger>
+                    <SelectTrigger className="h-10 sm:h-8 w-[140px] sm:w-[160px] text-xs rounded-lg"><SelectValue placeholder="المنطقة" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">جميع المناطق</SelectItem>
                       {reportAreas.map(a => <SelectItem key={a as string} value={a as string}>{a}</SelectItem>)}
                     </SelectContent>
                   </Select>
                   {(rptCategoryFilter !== "all" || rptAreaFilter !== "all") && (
-                    <Button variant="ghost" size="sm" className="h-8 text-xs gap-1 text-muted-foreground" onClick={() => { setRptCategoryFilter("all"); setRptAreaFilter("all"); }}>
+                    <Button variant="ghost" size="sm" className="h-10 sm:h-8 text-xs gap-1 text-muted-foreground px-3 sm:px-2" onClick={() => { setRptCategoryFilter("all"); setRptAreaFilter("all"); }}>
                       <X className="w-3 h-3" /> مسح
                     </Button>
                   )}
                   <div className="flex-1" />
                   <span className="text-xs text-muted-foreground font-medium">{filteredReports.length} بلاغ</span>
                   {canExport && (
-                    <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5 rounded-lg" onClick={handleExportReports}>
+                    <Button variant="outline" size="sm" className="h-10 sm:h-8 text-xs gap-1.5 rounded-lg px-3 sm:px-2" onClick={handleExportReports}>
                       <Download className="w-3.5 h-3.5" /> CSV
                     </Button>
                   )}
                 </div>
                 <Separator />
-                <ScrollArea className="h-[calc(100vh-300px)]">
-                  <table className="w-full text-xs">
+                <ScrollArea className="h-[calc(100vh-280px)]">
+                  <div className="w-full overflow-x-auto">
+                  <table className="w-full min-w-[720px] text-xs">
                     <thead className="sticky top-0 bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur z-10">
                       <tr className="border-b">
                         <th className="text-right py-2.5 px-3 font-semibold text-muted-foreground">التاريخ</th>
@@ -814,6 +844,7 @@ export default function Dashboard() {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 </ScrollArea>
               </div>
             </TabsContent>
@@ -822,7 +853,7 @@ export default function Dashboard() {
             {canAnalyze && (
               <TabsContent value="signals" className="flex-1 overflow-auto">
                 <ScrollArea className="h-full">
-                  <div className="p-6 space-y-3">
+                  <div className="p-3 sm:p-4 lg:p-6 space-y-3">
                     <div className="p-4 rounded-xl bg-slate-100/80 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/30">
                       <div className="flex items-center gap-2 mb-1.5">
                         <Eye className="w-4 h-4 text-slate-400" />
@@ -834,11 +865,11 @@ export default function Dashboard() {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
                       <span className="text-[10px] text-slate-400">
                         {intelData ? `${intelData.reports_scanned} بلاغ • ${intelData.scan_duration_ms}ms` : ""}
                       </span>
-                      <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5 border-slate-300 text-slate-500 rounded-lg" onClick={handleScanIntel} disabled={isScanning}>
+                      <Button variant="outline" size="sm" className="h-10 sm:h-7 text-xs gap-1.5 border-slate-300 text-slate-500 rounded-lg px-3 sm:px-2" onClick={handleScanIntel} disabled={isScanning}>
                         {isScanning ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />} فحص
                       </Button>
                     </div>
@@ -889,16 +920,34 @@ export default function Dashboard() {
 
         {/* ═══ RIGHT: Crisis detail panel ═══ */}
         {selectedIncident && (
-          <div className="flex-1 border-l border-slate-200 dark:border-slate-800 overflow-auto">
-            <CrisisDetailPanel
-              incident={selectedIncident}
-              onClose={() => setSelectedId(null)}
-              onAnalyze={handleAnalyze}
-              onExport={handleExport}
-              canAnalyze={canAnalyze}
-              isAnalyzing={analyzingIds.has(selectedIncident.id)}
-            />
-          </div>
+          <>
+            <div className="hidden lg:flex flex-1 border-l border-slate-200 dark:border-slate-800 overflow-auto">
+              <CrisisDetailPanel
+                incident={selectedIncident}
+                onClose={closeIncidentPanel}
+                onAnalyze={handleAnalyze}
+                onExport={handleExport}
+                canAnalyze={canAnalyze}
+                isAnalyzing={analyzingIds.has(selectedIncident.id)}
+              />
+            </div>
+            <div className={`lg:hidden fixed inset-0 z-50 ${isMobilePanelOpen ? "pointer-events-auto" : "pointer-events-none"}`}>
+              <div
+                className={`absolute inset-0 bg-black/40 transition-opacity ${isMobilePanelOpen ? "opacity-100" : "opacity-0"}`}
+                onClick={() => setIsMobilePanelOpen(false)}
+              />
+              <div className={`absolute inset-y-0 right-0 w-[92%] max-w-[420px] bg-background shadow-2xl border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 ${isMobilePanelOpen ? "translate-x-0" : "translate-x-full"}`}>
+                <CrisisDetailPanel
+                  incident={selectedIncident}
+                  onClose={closeIncidentPanel}
+                  onAnalyze={handleAnalyze}
+                  onExport={handleExport}
+                  canAnalyze={canAnalyze}
+                  isAnalyzing={analyzingIds.has(selectedIncident.id)}
+                />
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>
